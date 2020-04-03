@@ -1,0 +1,26 @@
+{
+  "name": "git-hook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/git-webhook-test/test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/git-webhook-test/test/issues"
+  },
+  "homepage": "https://github.com/git-webhook-test/test#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "express": "^4.17.1",
+    "mixin-node-sdk": "^1.1.8",
+    "pg": "^7.18.1"
+  }
+}
