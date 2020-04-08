@@ -87,7 +87,25 @@ ${release.tag_name && '> ' + release.tag_name || ''}
 [**${repository.full_name}**](${repository.html_url})`
 }
 
+function get_check_run_msg(data) {
+    let { action, check_run: { name, status, conclusion, html_url }, sender: { login: sender }, repository } = data
+    return `check_run ${action} by ${sender}
+> [**${name}**](${html_url})
+status: ${status}
+conclusion: ${conclusion}
 
+[**${repository.full_name}**](${repository.html_url})`
+}
+
+function get_check_suite_msg(data) {
+    let { action, check_suite: { head_branch, status, conclusion }, sender: { login: sender }, repository } = data
+    return `check_suite ${action} by ${sender}
+> **${head_branch}**
+status: ${status}
+conclusion: ${conclusion}
+
+[**${repository.full_name}**](${repository.html_url})`
+}
 
 
 function get_message_transfer(data, type) {
@@ -107,6 +125,10 @@ function get_message_transfer(data, type) {
             return get_branch_or_tag_msg(data, type)
         case 'release':
             return get_release_msg(data)
+        case 'check_run':
+            return get_check_run_msg(data)
+        case 'check_suite':
+            return get_check_suite_msg(data)
         default:
             return undefined
     }
