@@ -1,0 +1,14 @@
+{
+  "mixin": {
+    "client_id": "",
+    "session_id": "",
+    "private_key": ""
+  },
+  "db": {
+    "host": "localhost",
+    "port": "5432",
+    "user": "postgres",
+    "password": "postgres",
+    "database": "githook"
+  }
+}

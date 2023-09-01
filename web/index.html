@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script>
+        var user = window.localStorage.getItem('user')
+        if (!user) window.location.href = 'https://mixin.one/oauth/authorize?client_id=b5bd82f6-8bae-424a-ac37-132d955b91df&scope=PROFILE:READ&response_type=code'
+    </script>
+    <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <title>GitHook</title>
+    <style>
+        body {
+            background-color: #feebd4;
+        }
+
+        .el-message-box {
+            width: 90%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-loading="loading">
+        <h3 style="text-align: center">GitHook</h3>
+        <template v-if="form.conversation_id">
+            <el-button @click="click_new" style="margin-bottom: 10px;" type="primary">新增</el-button>
+            <el-table :data="tableData" border style="width: 100%" max-height="450">
+                <el-table-column width="80" prop="tag" label="仓库位置"></el-table-column>
+                <el-table-column prop="name" label="项目全称"></el-table-column>
+                <el-table-column width="100" label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click="click_edit(scope.row)" type="text" size="small">编辑</el-button>
+                        <el-button @click="click_delete(scope.row)" type="text" size="small">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </template>
+        <el-dialog v-loading="loading" :title="is_new ? '新增' : '修改信息'" :visible.sync="dialogFormVisible" width="90%">
+            <el-form :model="form">
+                <el-form-item label="项目全称">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="Secret">
+                    <el-input v-model="form.signature" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="仓库位置">
+                    <el-radio-group v-model="form.tag">
+                        <el-radio label="github"></el-radio>
+                        <el-radio label="gitlab"></el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="click_submit">确 定</el-button>
+            </div>
+        </el-dialog>
+        <p>使用说明</p>
+        <p>1. 打开网站 https://github.com/所有者/仓库名/settings/hooks </p>
+        <p>2. 点击 Add webhook</p>
+        <p>3. Payload URL 填写 【 https://githook.mixin.zone/api/webhook 】<br />
+            Content type 选择 【 application/json 】<br />
+            secret 可以为空，如果填写了需要留存 <br />
+            点击 Add webhook </p>
+        <p>4. 请在群聊中添加并打开机器人</p>
+        <p>5. 点击新增，填写项目全称</p>
+        <p>注意：<br />
+            项目全称为：所有者/仓库名<br />
+            Secret 跟 github 保持一致
+        </p>
+
+    </div>
+    <script>
+        var instance = axios.create({
+            baseURL: 'https://githook.mixin.zone/api'
+        })
+        var app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    form: {
+                        webhook_id: '',
+                        conversation_id: '',
+                        user_id: '',
+                        name: '',
+                        tag: 'github',
+                        signature: '',
+                    },
+                    loading: false,
+                    is_new: false,
+                    dialogFormVisible: false,
+                    tableData: []
+                }
+            },
+            methods: {
+                click_new() {
+                    this.is_new = true
+                    this.form.name = ''
+                    this.form.signature = ''
+                    this.form.tag = 'github'
+                    this.dialogFormVisible = true
+                },
+                click_edit({ webhook_id, name, tag, signature }) {
+                    this.is_new = false
+                    this.form.webhook_id = webhook_id
+                    this.form.name = name
+                    this.form.signature = signature
+                    this.form.tag = tag
+                    this.dialogFormVisible = true
+                },
+                click_delete({ webhook_id }) {
+                    this.$confirm('确认删除？').then(async _ => {
+                        this.loading = true
+                        await instance.post('/deleteOne', { webhook_id })
+                        await update_hook_list.call(this)
+                        this.$message.info('ok')
+                        this.loading = false
+                    }).catch(_ => {
+                    })
+                },
+                async click_submit() {
+                    var { name } = this.form
+                    if (!name) return this.$message.error('内容未完成')
+                    this.loading = true
+                    var { data } = this.is_new ? await instance.post('/addOne', this.form) : await instance.post('/editOne', this.form)
+                    this.dialogFormVisible = false
+                    await update_hook_list.call(this)
+                    this.$message.info('ok')
+                    this.loading = false
+                }
+            },
+            async mounted() {
+                changeTheme('#feebd4')
+                var user = window.localStorage.getItem('user')
+                if (!user) return window.location.href = 'https://mixin.one/oauth/authorize?client_id=b5bd82f6-8bae-424a-ac37-132d955b91df&scope=PROFILE:READ&response_type=code'
+                this.form.user_id = JSON.parse(user).user_id
+                this.form.conversation_id = get_conversation_id()
+                await update_hook_list.call(this)
+            },
+        });
+
+        async function update_hook_list() {
+            var { conversation_id } = this.form
+            var { data } = await instance.post('/getList', { conversation_id })
+            this.tableData = data.data
+        }
+
+
+        function environment() {
+            if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.MixinContext) {
+                return 'iOS'
+            }
+            if (window.MixinContext && window.MixinContext.getContext) {
+                return 'Android'
+            }
+            return undefined
+        }
+
+        function get_conversation_id() {
+            var ctx;
+            switch (environment()) {
+                case 'iOS':
+                    ctx = prompt('MixinContext.getContext()');
+                    return JSON.parse(ctx).conversation_id;
+                case 'Android':
+                    ctx = window.MixinContext.getContext();
+                    return JSON.parse(ctx).conversation_id;
+                default:
+                    return undefined;
+            }
+        }
+
+        function changeTheme(color) {
+            var head = document.getElementsByTagName('head')[0]
+            var metas = document.getElementsByTagName('meta');
+            for (var i = 0; i < metas.length; i++) {
+                if (metas[i].name === 'theme-color') {
+                    head.removeChild(metas[i])
+                }
+            }
+            var meta = document.createElement('meta')
+            meta.name = 'theme-color';
+            meta.content = color;
+            head.appendChild(meta)
+            reloadTheme()
+        }
+
+
+        function reloadTheme() {
+            switch (environment()) {
+                case 'iOS':
+                    return window.webkit.messageHandlers.reloadTheme && window.webkit.messageHandlers.reloadTheme.postMessage('');
+                case 'Android':
+                    return window.MixinContext.reloadTheme()
+            }
+        }
+    </script>
+</body>
+
+</html>
