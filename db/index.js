@@ -6,9 +6,14 @@ const SQL = require('./sql')
 async function query(sql, params) {
     const client = new pgsql.Client(DATABASE_CONFIG)
     await client.connect()
-    const { rows } = await client.query(sql, params)
-    await client.end()
-    return rows
+    try {
+      const { rows } = await client.query(sql, params)
+      return rows
+    } catch (err) {
+      console.error("sql %s, params %s, error %s", query, params, err)
+    } finally {
+      await client.end()
+    }
 }
 
 class DB {
