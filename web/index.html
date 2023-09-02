@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script>
         var user = window.localStorage.getItem('user')
-        if (!user) window.location.href = 'https://mixin.one/oauth/authorize?client_id=b5bd82f6-8bae-424a-ac37-132d955b91df&scope=PROFILE:READ&response_type=code'
+        if (!user) window.location.href = 'https://mixin.one/oauth/authorize?client_id=8dcf823d-9eb3-4da2-8734-f0aad50c0da6&scope=PROFILE:READ&response_type=code'
     </script>
     <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -91,6 +91,7 @@
                         name: '',
                         tag: 'github',
                         signature: '',
+                        user,
                     },
                     loading: false,
                     is_new: false,
@@ -138,8 +139,12 @@
             async mounted() {
                 changeTheme('#feebd4')
                 var user = window.localStorage.getItem('user')
-                if (!user) return window.location.href = 'https://mixin.one/oauth/authorize?client_id=b5bd82f6-8bae-424a-ac37-132d955b91df&scope=PROFILE:READ&response_type=code'
+                if (!user) return window.location.href = 'https://mixin.one/oauth/authorize?client_id=8dcf823d-9eb3-4da2-8734-f0aad50c0da6&scope=PROFILE:READ&response_type=code'
+                this.form.user = user;
                 this.form.user_id = JSON.parse(user).user_id
+                if (!this.form.user_id) {
+                  window.localStorage.removeItem('user')
+                }
                 this.form.conversation_id = get_conversation_id()
                 await update_hook_list.call(this)
             },

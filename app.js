@@ -3,6 +3,8 @@ const app = express()
 const bodyParser = require('body-parser')
 const gikHook = require('./models')
 
+// set up morgan middleware
+app.use(morgan("short"));
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Credentials", true)
