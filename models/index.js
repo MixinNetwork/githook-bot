@@ -59,8 +59,10 @@ class Githook extends DB {
                     continue
                 }
             }
+            let buff = new Buffer(data);
+            let base64data = buff.toString('base64');
             client.sendMessage({
-                data,
+                data_base64: base64data,
                 message_id:client.newUUID(),
                 conversation_id,
                 category: 'PLAIN_POST',
