@@ -34,7 +34,7 @@ class Githook extends DB {
                     continue
                 }
             }
-            let buff = new Buffer(data);
+            let buff = Buffer.from(data);
             let base64data = buff.toString('base64');
             client.sendMessage({
                 data_base64: base64data,
@@ -59,7 +59,7 @@ class Githook extends DB {
                     continue
                 }
             }
-            let buff = new Buffer(data);
+            let buff = Buffer.from(data);
             let base64data = buff.toString('base64');
             client.sendMessage({
                 data_base64: base64data,
