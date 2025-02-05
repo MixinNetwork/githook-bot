@@ -1,4 +1,5 @@
 node_modules
 message
 config.json
+config/config.js
 .DS_Store
