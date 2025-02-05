@@ -1,7 +1,7 @@
 const axios = require('axios')
-const { Client } = require('mixin-node-sdk')
+const { MixinApi } = require('@mixin.dev/mixin-node-sdk');
 const { CLIENT_CONFIG } = require('../config/config')
-const client = new Client(CLIENT_CONFIG)
+const client = new MixinApi(CLIENT_CONFIG)
 
 const _mixinAxios = axios.create({
     baseURL: 'https://api.mixin.one',
