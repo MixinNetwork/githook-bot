@@ -1,8 +1,11 @@
+const { v4 } = require('uuid');
 const githubMessage = require('./github')
 const gitlabMessage = require('./gitlab')
 const { verify, getUUID } = require('../tools')
 const DB = require('../db')
 const { client, request } = require('../api')
+const { base64RawURLEncode } = require('@mixin.dev/mixin-node-sdk');
+
 class Githook extends DB {
   constructor() {
     super()
@@ -33,13 +36,12 @@ class Githook extends DB {
           continue
         }
       }
-      let buff = Buffer.from(data);
-      let base64data = buff.toString('base64');
-      client.sendMessage({
-        data_base64: base64data,
-        message_id:client.newUUID(),
+      let base64data = base64RawURLEncode(data);
+      client.message.sendLegacy({
         conversation_id,
+        message_id: v4(),
         category: 'PLAIN_POST',
+        data_base64: base64data,
       })
     }
     return { data: 'ok' }
@@ -58,13 +60,12 @@ class Githook extends DB {
           continue
         }
       }
-      let buff = Buffer.from(data);
-      let base64data = buff.toString('base64');
-      client.sendMessage({
-        data_base64: base64data,
-        message_id:client.newUUID(),
+      let base64data = base64RawURLEncode(data);
+      client.message.sendLegacy({
         conversation_id,
+        message_id: v4(),
         category: 'PLAIN_POST',
+        data_base64: base64data,
       })
     }
     return { data: 'ok' }

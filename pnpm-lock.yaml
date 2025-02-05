@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@mixin.dev/mixin-node-sdk':
-        specifier: ^7.2.2
-        version: 7.2.2
+        specifier: ^7.3.0
+        version: 7.3.0
       axios:
         specifier: ^1.7.9
         version: 1.7.9
@@ -23,6 +23,9 @@ importers:
       pg:
         specifier: ^8.13.1
         version: 8.13.1
+      uuid:
+        specifier: ^11.0.5
+        version: 11.0.5
 
 packages:
 
@@ -30,8 +33,8 @@ packages:
     resolution: {integrity: sha512-AOPI3D+a8dXnja+iwsUqGRjr1BbZIe771sXdapOtYI531gSqpi92vXivKcq2asu/DFpdl1ceFAKZyRzK2PCVcQ==}
     engines: {node: '>=6.9.0'}
 
-  '@mixin.dev/mixin-node-sdk@7.2.2':
-    resolution: {integrity: sha512-xH5GEgGPxsMhHuMitEh4syEFsK3XB//T8fc4trkhFzrUWNTDc/bgFx1KlkvVBP6BSyjcFIdaoVueWGUxz7ehDA==}
+  '@mixin.dev/mixin-node-sdk@7.3.0':
+    resolution: {integrity: sha512-OGizc4eoeNIqwLmD6Xw8EB6IGtdK+/eiBS+PENI30/Wo6271g04gN552e3I2Q31FG0wBmBGzUBFMbbtTTKHUXA==}
     engines: {node: '>=10'}
 
   '@noble/ciphers@1.2.1':
@@ -447,6 +450,10 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
+  uuid@11.0.5:
+    resolution: {integrity: sha512-508e6IcKLrhxKdBbcA2b4KQZlLVp2+J5UwQ6F7Drckkc5N9ZJwFa4TgWtsww9UG8fGHbm6gbV19TdM5pQ4GaIA==}
+    hasBin: true
+
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
@@ -477,7 +484,7 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.14.1
 
-  '@mixin.dev/mixin-node-sdk@7.2.2':
+  '@mixin.dev/mixin-node-sdk@7.3.0':
     dependencies:
       '@noble/ciphers': 1.2.1
       '@noble/curves': 1.8.1
@@ -931,6 +938,8 @@ snapshots:
   unpipe@1.0.0: {}
 
   utils-merge@1.0.1: {}
+
+  uuid@11.0.5: {}
 
   uuid@9.0.1: {}
 
